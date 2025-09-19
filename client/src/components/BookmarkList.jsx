@@ -47,8 +47,8 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
         className="text-center py-12"
       >
         <div className="text-6xl mb-4">📚</div>
-        <h3 className="text-xl font-semibold text-white mb-2">No bookmarks yet</h3>
-        <p className="text-gray-400">Start by adding your first bookmark!</p>
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">No bookmarks yet</h3>
+        <p className="text-gray-600 dark:text-gray-400">Start by adding your first bookmark!</p>
       </motion.div>
     );
   }
@@ -63,18 +63,18 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
           initial="hidden"
           animate="visible"
           whileHover="hover"
-          className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-lg p-6 shadow-lg border border-gray-700"
+          className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2 line-clamp-2">
                 {bookmark.title}
               </h3>
               <a
                 href={bookmark.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1 mb-2 break-all"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm flex items-center gap-1 mb-2 break-all"
               >
                 <FaExternalLinkAlt className="text-xs" />
                 {bookmark.url}
@@ -83,7 +83,7 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
             <div className="flex gap-2 ml-2">
               <button
                 onClick={() => onBookmarkUpdated(bookmark)}
-                className="text-gray-400 hover:text-blue-400 transition-colors p-1"
+                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-1"
                 aria-label="Edit bookmark"
               >
                 <FaEdit />
@@ -91,7 +91,7 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
               <button
                 onClick={() => handleDelete(bookmark._id)}
                 disabled={deletingId === bookmark._id}
-                className="text-gray-400 hover:text-red-400 transition-colors p-1 disabled:opacity-50"
+                className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-1 disabled:opacity-50"
                 aria-label="Delete bookmark"
               >
                 <FaTrash />
@@ -100,7 +100,7 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
           </div>
 
           {bookmark.description && (
-            <p className="text-gray-300 text-sm mb-3 line-clamp-3">
+            <p className="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-3">
               {bookmark.description}
             </p>
           )}
@@ -110,7 +110,7 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
               {bookmark.tags.map((tag, tagIndex) => (
                 <span
                   key={tagIndex}
-                  className="inline-flex items-center gap-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full"
+                  className="inline-flex items-center gap-1 bg-pink-600 text-white text-xs px-2 py-1 rounded-full"
                 >
                   <FaTag className="text-xs" />
                   {tag}
@@ -119,7 +119,7 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
             </div>
           )}
 
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
             Added {formatDate(bookmark.createdAt)}
           </div>
         </motion.div>

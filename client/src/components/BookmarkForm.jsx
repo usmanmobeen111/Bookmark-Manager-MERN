@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaTimes, FaChevronDown } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { createBookmark } from '../api/bookmarks';
 
@@ -14,13 +14,28 @@ const formVariants = {
   exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } }
 };
 
+const commonTags = [
+  'work', 'personal', 'reading', 'development', 'design', 'tutorial',
+  'blog', 'news', 'social', 'entertainment', 'shopping', 'finance'
+];
+
 const BookmarkForm = ({ onBookmarkAdded }) => {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
+  const [selectedCommonTags, setSelectedCommonTags] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleCommonTagClick = (tag) => {
+    if (selectedCommonTags.includes(tag)) {
+      setSelectedCommonTags(selectedCommonTags.filter(t => t !== tag));
+    } else {
+      setSelectedCommonTags([...selectedCommonTags, tag]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,17 +46,19 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
     setLoading(true);
     setError('');
     try {
+      const allTags = [...selectedCommonTags, ...tags.split(',').map(tag => tag.trim()).filter(tag => tag)];
       const newBookmark = await createBookmark({
         title,
         url,
         description,
-        tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag)
+        tags: allTags
       });
       onBookmarkAdded(newBookmark);
       setTitle('');
       setUrl('');
       setDescription('');
       setTags('');
+      setSelectedCommonTags([]);
     } catch {
       setError('Failed to add bookmark');
     } finally {
@@ -56,14 +73,14 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
       animate="visible"
       exit="exit"
       onSubmit={handleSubmit}
-      className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 backdrop-blur-md rounded-xl p-6 max-w-xl mx-auto shadow-2xl border border-gray-700"
+      className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-xl mx-auto shadow-2xl border border-gray-200 dark:border-gray-700"
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-white">Add New Bookmark</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Add New Bookmark</h2>
         <button
           type="button"
           onClick={() => onBookmarkAdded(null)}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors"
           aria-label="Close form"
         >
           <FaTimes />
@@ -73,11 +90,11 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       <div className="mb-4">
-        <label htmlFor="title" className="block text-gray-300 mb-1">Title *</label>
+        <label htmlFor="title" className="block text-gray-700 dark:text-gray-300 mb-1">Title *</label>
         <input
           id="title"
           type="text"
-          className="w-full rounded-md px-3 py-2 bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full rounded-md px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
           placeholder="Bookmark title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -86,11 +103,11 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="url" className="block text-gray-300 mb-1">URL *</label>
+        <label htmlFor="url" className="block text-gray-700 dark:text-gray-300 mb-1">URL *</label>
         <input
           id="url"
           type="url"
-          className="w-full rounded-md px-3 py-2 bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full rounded-md px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
           placeholder="https://example.com"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -99,10 +116,10 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="description" className="block text-gray-300 mb-1">Description</label>
+        <label htmlFor="description" className="block text-gray-700 dark:text-gray-300 mb-1">Description</label>
         <textarea
           id="description"
-          className="w-full rounded-md px-3 py-2 bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full rounded-md px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
           placeholder="Optional description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -110,12 +127,37 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
         />
       </div>
 
-      <div className="mb-6">
-        <label htmlFor="tags" className="block text-gray-300 mb-1">Tags (comma separated)</label>
+      <div className="mb-6 relative">
+        <label htmlFor="tags" className="block text-gray-700 dark:text-gray-300 mb-1">Tags (comma separated)</label>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="w-full text-left rounded-md px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 flex justify-between items-center"
+          >
+            Select common tags
+            <FaChevronDown />
+          </button>
+          {showDropdown && (
+            <ul className="absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg">
+              {commonTags.map((tag) => (
+                <li
+                  key={tag}
+                  onClick={() => handleCommonTagClick(tag)}
+                  className={`cursor-pointer px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                    selectedCommonTags.includes(tag) ? 'bg-pink-600 text-white' : 'text-gray-800 dark:text-white'
+                  }`}
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <input
           id="tags"
           type="text"
-          className="w-full rounded-md px-3 py-2 bg-black/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full rounded-md px-3 py-2 mt-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
           placeholder="e.g. work, personal, reading"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
@@ -125,7 +167,7 @@ const BookmarkForm = ({ onBookmarkAdded }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+        className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
       >
       {loading ? 'Saving...' : (
         <>

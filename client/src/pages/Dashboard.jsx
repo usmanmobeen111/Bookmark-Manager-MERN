@@ -56,15 +56,15 @@ const Dashboard = () => {
   const allTags = [...new Set(bookmarks.flatMap(bookmark => bookmark.tags))];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 dark:text-white mb-4">
             Bookmark Manager
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Organize your favorite websites with style and ease
           </p>
         </div>
@@ -79,7 +79,7 @@ const Dashboard = () => {
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
             {showForm ? 'Cancel' : 'Add Bookmark'}
           </button>
@@ -93,8 +93,8 @@ const Dashboard = () => {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-400"></div>
-            <p className="text-gray-300 mt-4">Loading bookmarks...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600"></div>
+            <p className="text-gray-600 dark:text-gray-300 mt-4">Loading bookmarks...</p>
           </div>
         ) : (
           <BookmarkList
