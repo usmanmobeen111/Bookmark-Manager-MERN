@@ -1,33 +1,34 @@
 import { FaFilter, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
-const buttonVariants = {
-  hover: {
-    scale: 1.05,
-    boxShadow: '0 4px 12px rgba(219, 39, 119, 0.6)',
-    transition: { duration: 0.3 },
-  },
-  tap: { scale: 0.95 },
-};
+import { tagVariants, buttonVariants } from '../styles/animations';
 
 const TagFilter = ({ tags, selectedTag, onTagSelect }) => {
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center gap-2 mb-3">
-        <FaFilter className="text-gray-600 dark:text-gray-400" />
-        <span className="text-gray-800 dark:text-white font-medium">Filter by Tag</span>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-gradient-to-b from-slate-800 to-slate-900 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-slate-700/50 relative overflow-hidden"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-bl-full -z-10"></div>
+        <div className="bg-gradient-to-r from-emerald-500 to-cyan-500 p-2 rounded-lg">
+          <FaFilter className="text-white" />
+        </div>
+        <span className="text-slate-300 font-semibold text-lg">Filter by Tag</span>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 sm:gap-3">
         <motion.button
           onClick={() => onTagSelect('')}
-          variants={buttonVariants}
+          variants={tagVariants}
           whileHover="hover"
           whileTap="tap"
-          className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 ${
             selectedTag === ''
-              ? 'bg-pink-600 text-white shadow-lg'
-              : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-xl border border-emerald-500/30'
+              : 'bg-slate-700 text-slate-300 hover:bg-slate-600 border border-slate-600/50'
           }`}
         >
           All
@@ -37,13 +38,13 @@ const TagFilter = ({ tags, selectedTag, onTagSelect }) => {
           <motion.button
             key={tag}
             onClick={() => onTagSelect(selectedTag === tag ? '' : tag)}
-            variants={buttonVariants}
+            variants={tagVariants}
             whileHover="hover"
             whileTap="tap"
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 ${
               selectedTag === tag
-                ? 'bg-pink-600 text-white shadow-lg'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-xl border border-emerald-500/30'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600 border border-slate-600/50'
             }`}
           >
             {tag}
@@ -53,9 +54,9 @@ const TagFilter = ({ tags, selectedTag, onTagSelect }) => {
       </div>
 
       {tags.length === 0 && (
-        <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">No tags available</p>
+        <p className="text-slate-400 text-sm mt-4 italic">No tags available</p>
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -56,20 +56,34 @@ const Dashboard = () => {
   const allTags = [...new Set(bookmarks.flatMap(bookmark => bookmark.tags))];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 text-white pb-10">
       <Header />
-
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 dark:text-white mb-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="text-center mb-12">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent mb-6"
+          >
             Bookmark Manager
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed"
+          >
             Organize your favorite websites with style and ease
-          </p>
+          </motion.p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-8 sm:mb-12"
+        >
           <div className="flex-1">
             <TagFilter
               tags={allTags}
@@ -77,33 +91,53 @@ const Dashboard = () => {
               onTagSelect={setSelectedTag}
             />
           </div>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setShowForm(!showForm)}
-            className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 border border-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
           >
             {showForm ? 'Cancel' : 'Add Bookmark'}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
         {showForm && (
-          <div className="mb-8">
-            <BookmarkForm onBookmarkAdded={handleBookmarkAdded} />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="mb-12"
+          >
+            <BookmarkForm
+              onBookmarkAdded={handleBookmarkAdded}
+              onClose={() => setShowForm(false)}
+            />
+          </motion.div>
         )}
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600"></div>
-            <p className="text-gray-600 dark:text-gray-300 mt-4">Loading bookmarks...</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-16"
+          >
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-purple-600 border-t-transparent"></div>
+            <p className="text-slate-600 mt-6 text-lg">Loading bookmarks...</p>
+          </motion.div>
         ) : (
-          <BookmarkList
-            bookmarks={filteredBookmarks}
-            onBookmarkUpdated={handleBookmarkUpdated}
-            onBookmarkDeleted={handleBookmarkDeleted}
-          />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <BookmarkList
+              bookmarks={filteredBookmarks}
+              onBookmarkUpdated={handleBookmarkUpdated}
+              onBookmarkDeleted={handleBookmarkDeleted}
+            />
+          </motion.div>
         )}
-      </main>
+      </div>
     </div>
   );
 };

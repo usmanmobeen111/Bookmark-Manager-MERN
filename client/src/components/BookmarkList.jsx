@@ -2,16 +2,7 @@ import { useState } from 'react';
 import { FaEdit, FaTrash, FaExternalLinkAlt, FaTag } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { deleteBookmark } from '../api/bookmarks';
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.4, ease: 'easeOut' },
-  }),
-  hover: { scale: 1.03, boxShadow: '0 8px 20px rgba(0,0,0,0.15)' },
-};
+import { listVariants, listItemVariants, fadeIn } from '../styles/animations';
 
 const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
   const [deletingId, setDeletingId] = useState(null);
@@ -42,89 +33,102 @@ const BookmarkList = ({ bookmarks, onBookmarkUpdated, onBookmarkDeleted }) => {
   if (bookmarks.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center py-12"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="text-center py-16"
       >
-        <div className="text-6xl mb-4">📚</div>
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">No bookmarks yet</h3>
-        <p className="text-gray-600 dark:text-gray-400">Start by adding your first bookmark!</p>
+        <div className="text-8xl mb-6">📚</div>
+        <h3 className="text-2xl font-bold text-white mb-3">No bookmarks yet</h3>
+        <p className="text-slate-300 text-lg">Start by adding your first bookmark!</p>
       </motion.div>
     );
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <motion.div 
+      className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 px-2"
+      variants={listVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {bookmarks.map((bookmark, index) => (
-        <motion.div
-          key={bookmark._id}
-          custom={index}
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
-          whileHover="hover"
-          className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          <motion.div
+            variants={listItemVariants}
+            key={bookmark._id}
+            custom={index}
+            whileHover="hover"
+          className="bg-gradient-to-b from-slate-800 to-slate-900 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-slate-700/50 h-full flex flex-col relative overflow-hidden"
         >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-bl-full -z-10"></div>
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2 line-clamp-2">
+              <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 leading-tight">
                 {bookmark.title}
               </h3>
               <a
                 href={bookmark.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm flex items-center gap-1 mb-2 break-all"
+                className="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-2 mb-3 break-all font-medium transition-colors duration-200"
               >
                 <FaExternalLinkAlt className="text-xs" />
-                {bookmark.url}
+                Visit Link
               </a>
             </div>
-            <div className="flex gap-2 ml-2">
-              <button
+            <div className="flex gap-2 ml-3">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={() => onBookmarkUpdated(bookmark)}
-                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-1"
+                className="text-slate-400 hover:text-emerald-400 transition-colors p-2 rounded-lg hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                 aria-label="Edit bookmark"
               >
                 <FaEdit />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={() => handleDelete(bookmark._id)}
                 disabled={deletingId === bookmark._id}
-                className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-1 disabled:opacity-50"
+                className="text-slate-400 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-slate-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 aria-label="Delete bookmark"
               >
                 <FaTrash />
-              </button>
+              </motion.button>
             </div>
           </div>
 
           {bookmark.description && (
-            <p className="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-3">
+            <p className="text-slate-300 text-sm mb-4 line-clamp-3 leading-relaxed">
               {bookmark.description}
             </p>
           )}
 
           {bookmark.tags && bookmark.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
+            <div className="flex flex-wrap gap-2 mb-4">
               {bookmark.tags.map((tag, tagIndex) => (
-                <span
+                <motion.span
                   key={tagIndex}
-                  className="inline-flex items-center gap-1 bg-pink-600 text-white text-xs px-2 py-1 rounded-full"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: tagIndex * 0.05 }}
+                  whileHover={{ scale: 1.1 }}
+                  className="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-md"
                 >
                   <FaTag className="text-xs" />
                   {tag}
-                </span>
+                </motion.span>
               ))}
             </div>
           )}
 
-          <div className="text-xs text-gray-600 dark:text-gray-400">
+          <div className="text-xs text-slate-400 border-t border-slate-700/50 pt-3 mt-auto">
             Added {formatDate(bookmark.createdAt)}
           </div>
         </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };
 

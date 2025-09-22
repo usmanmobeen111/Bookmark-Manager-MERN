@@ -1,0 +1,23 @@
+{
+  "name": "bookmark-manager-mern",
+  "version": "1.0.0",
+  "description": "A modern bookmark manager built with MERN stack",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "install-all": "npm run install-client && npm run install-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["bookmark", "manager", "mern", "react", "nodejs", "mongodb"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
